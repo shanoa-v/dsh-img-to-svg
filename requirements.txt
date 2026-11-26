@@ -1,0 +1,91 @@
+# dsh-img-to-svg 依赖清单
+# ============================
+# 生成日期: 2026-09-13
+# 实测环境: Python 3.13.9 (D:\anaconda3\python.exe) on Windows
+#
+# 安装:
+#   "/d/anaconda3/python.exe" -m pip install -r requirements.txt
+#
+# 或用国内镜像(若默认源超时):
+#   "/d/anaconda3/python.exe" -m pip install -r requirements.txt \
+#       -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# ---- 必需依赖 ----
+
+Pillow>=10.0.0
+# 实测 12.0.0
+# 用途: 图像读写、缩放(LANCZOS)、中值滤波、alpha 合成、色彩量化
+# 关键 API: Image.open, resize, filter(MedianFilter), alpha_composite,
+#           quantize, getpalette, crop, save
+
+numpy>=1.24.0
+# 实测 2.3.5
+# 用途: 全部数值计算基础
+# 关键 API: ndarray 运算, argmax, argsort, bincount, hypot, percentile,
+#           roll(用于 shoelace 面积), pad, nonzero
+
+scipy>=1.11.0
+# 实测 1.16.3
+# 用途: 边缘高斯平滑、连通域标记、邻域滤波
+# 关键 API: ndimage.gaussian_filter, ndimage.label,
+#           ndimage.generic_filter, ndimage.median_filter
+
+scikit-image>=0.22.0
+# 实测 0.25.2
+# 用途: 轮廓提取 + 色彩空间转换
+# 关键 API: measure.find_contours  ← 核心，提取等值线轮廓
+#           color.rgb2lab, color.lab2rgb
+
+scikit-learn>=1.3.0
+# 实测 1.7.2
+# 用途: 调色板聚类
+# 关键 API: cluster.MiniBatchKMeans
+# 说明: 用 MiniBatch 版本而非标准 KMeans，1920x1080 全图聚类只需 ~8s
+
+cairosvg>=2.7.0
+# 实测 2.9.1
+# 用途: SVG → PNG 渲染，用于视觉校验与相似度评估
+# 关键 API: cairosvg.svg2png(url=..., output_width=..., output_height=...)
+# 注意: 依赖系统级 Cairo 库；Windows 下 pip 装的 cairocffi 已含所需 DLL，
+#       通常无需额外安装。若报 Cairo 相关错误，见下方"疑难"。
+
+# ---- 标准库(无需安装) ----
+# os, sys, io, re, json, time, base64,
+# threading, queue, webbrowser, argparse,
+# http.server (BaseHTTPRequestHandler, ThreadingHTTPServer),
+# urllib.parse, collections
+# 说明: live_vec_server.py 的 HTTP 服务与自动开浏览器全部基于标准库，
+#       不依赖 Flask/Requests 等第三方框架。
+
+# ---- 系统级要求 ----
+# Python >= 3.9 (使用 f-string、海象运算符等)
+# 内存 >= 4GB (1920x1080 分层描摹峰值约 2-3GB)
+# 磁盘 >= 500MB (输出 SVG 及中间文件)
+
+# ---- 环境说明 ----
+#
+# 【推荐】anaconda 环境
+#   D:\anaconda3\python.exe
+#   已验证自带: Pillow / numpy / scipy / scikit-image / scikit-learn
+#   → 只需补装 cairosvg 即可
+#   验证命令:
+#     "D:/anaconda3/python.exe" -c "import PIL,numpy,scipy,skimage,sklearn,cairosvg; print('ok')"
+#
+# 【备选】WorkBuddy 托管 venv
+#   ~/.workbuddy/binaries/python/envs/default/Scripts/python.exe
+#   需完整安装全部依赖。
+#   ⚠️ 实测装 scikit-image 耗时可达 29 分钟(默认源网络慢)，
+#      建议加 --default-timeout=180 或换镜像源。
+
+# ---- 疑难 ----
+#
+# Q: cairosvg 报 "no library called cairo-2 was found"
+# A: Windows 下通常自动带上。若失败可装 GTK 运行时，或改用
+#    pip install cairosvg --upgrade 重装；实在不行可跳过渲染校验，
+#    直接用浏览器打开 SVG 肉眼检查。
+#
+# Q: skimage 导入慢
+# A: 正常，首次导入约 2-3s。不影响批处理总耗时。
+#
+# Q: numpy 2.x 兼容性
+# A: 脚本已适配 numpy 2.x，未使用已移除的 np.float/np.int 别名。
