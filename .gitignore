@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# 虚拟环境
+.venv/
+venv/
+env/
+ENV/
+
+# ---- 运行时产物 ----
+# 输出 SVG 与渲染校验图
+*.svg
+*.svgz
+render_*.png
+preview_*.png
+*_render.png
+max_final.png
+max_result.json
+
+# 中间态：vec / watch_draw / quality_boost 会生成
+*_t2_base*
+*_t3_base*
+*_qbase*
+*_t2b*
+*_t3b*
+*_lr_b*
+*_lr_r*
+*_lhb*
+*_max_base*
+*_mb*
+tmp_*
+_batch_report.json
+
+# 输出目录
+output/
+out/
+frames/
+cache/
+
+# 日志
+*.log
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+.history/
+
+# ---- 本地测试图片（不把用户的图传上来）----
+test_images/
+sample_images/
+
+# 但保留 assets 下可能需要的示例
+!assets/**/*.png
+!assets/**/*.jpg
